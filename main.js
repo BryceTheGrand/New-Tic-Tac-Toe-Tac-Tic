@@ -41,6 +41,7 @@ function undoMove() {
   turn = lastMove.turn;
   activeBoard = lastMove.activeBoard;
   turnDisplay.innerHTML = "Turn: " + (turn == 1 ? "X" : "O");
+  gameOver = false;
   moves.pop();
 }
 
