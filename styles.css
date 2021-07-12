@@ -79,7 +79,6 @@ canvas {
   height: 75vmin;
   width: 75vmin;
   margin: 1vmin 10vmin;
-  transition: width 50ms ease-in-out, height 50ms ease-in-out;
 }
 
 @media screen and (max-width: 800px) and (min-width: 270px) {

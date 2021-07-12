@@ -84,15 +84,15 @@ function onClick(e) {
     }
     if (pos.y < 1 / 3) {
       miniPos.y =
-        (pos.y * gameSize.height - 20) /
+        (pos.y * gameSize.height) /
         (gameSize.height / 3 - 40 - BOARD_SPACING);
     } else if (pos.y < 2 / 3) {
       miniPos.y =
-        ((pos.y - 1 / 3) * gameSize.height - 20 - BOARD_SPACING * 0.5) /
+        ((pos.y - 1 / 3) * gameSize.height - BOARD_SPACING * 0.5) /
         (gameSize.height / 3 - 40 - BOARD_SPACING);
     } else {
       miniPos.y =
-        ((pos.y - 2 / 3) * gameSize.height - 20 - BOARD_SPACING) /
+        ((pos.y - 2 / 3) * gameSize.height - BOARD_SPACING) /
         (gameSize.height / 3 - 40 - BOARD_SPACING);
     }
 
