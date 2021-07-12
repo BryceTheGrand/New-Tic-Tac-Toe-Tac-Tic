@@ -1,13 +1,18 @@
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 let restart = document.getElementById("restart");
-restart.addEventListener("click", () => {
-  restartGame();
+restart.addEventListener("click", restartGame);
+let undoButton = document.getElementById("undo");
+undoButton.addEventListener("click", () => {
+  console.log("Last move unndone...");
+  undoMove();
 });
+let turnDisplay = document.getElementById("turn-display");
 let gameBoard = new BigBoard();
 let turn = 1;
 let activeBoard = -1;
 let gameOver = false;
+let moves = [];
 
 const MARGINS = canvas.width / 30;
 const BOARD_RADIUS = 0.025 * canvas.width;
@@ -22,11 +27,27 @@ function setup() {
   window.addEventListener("resize", () => {
     canvasPosition = canvas.getBoundingClientRect();
   });
+  turnDisplay.innerHTML = "Turn: " + (turn == 1 ? "X" : "O");
+}
+
+function undoMove() {
+  let lastMove = moves[moves.length - 1];
+  gameBoard.makeMove(0, lastMove.boardX, lastMove.boardY);
+  gameBoard.boards[lastMove.boardX][lastMove.boardY].makeMove(
+    0,
+    lastMove.innerX,
+    lastMove.innerY
+  );
+  turn = lastMove.turn;
+  activeBoard = lastMove.activeBoard;
+  turnDisplay.innerHTML = "Turn: " + (turn == 1 ? "X" : "O");
+  moves.pop();
 }
 
 function restartGame() {
   gameBoard = new BigBoard();
   turn = 1;
+  turnDisplay.innerHTML = "Turn: " + (turn == 1 ? "X" : "O");
   activeBoard = -1;
   gameOver = false;
 }
@@ -100,6 +121,14 @@ function onClick(e) {
           ", " +
           bCoord.j
       );
+      moves.push({
+        turn: turn,
+        boardX: bCoord.i,
+        boardY: bCoord.j,
+        innerX: coord.i,
+        innerY: coord.j,
+        activeBoard: activeBoard,
+      });
       let boardWinner = boardSelected.makeMove(turn, coord.i, coord.j);
       if (boardWinner !== null && boardWinner !== 0) {
         let winner = gameBoard.makeMove(boardWinner, bCoord.i, bCoord.j);
@@ -111,7 +140,11 @@ function onClick(e) {
       }
 
       turn = turn == 1 ? -1 : 1;
-      if (gameBoard.boards[coord.i][coord.j].winner == 0 && gameBoard.winner == 0)
+      turnDisplay.innerHTML = "Turn: " + (turn == 1 ? "X" : "O");
+      if (
+        gameBoard.boards[coord.i][coord.j].winner == 0 &&
+        gameBoard.winner == 0
+      )
         activeBoard = coord.i + coord.j * 3;
       else activeBoard = -1;
     }
@@ -150,7 +183,13 @@ function loop() {
   } else if (gameBoard.winner == -1) {
     ctx.lineWidth = 30;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2 - 3 * MARGINS, 0, 2 * Math.PI);
+    ctx.arc(
+      canvas.width / 2,
+      canvas.height / 2,
+      canvas.width / 2 - 3 * MARGINS,
+      0,
+      2 * Math.PI
+    );
     ctx.stroke();
   }
 
